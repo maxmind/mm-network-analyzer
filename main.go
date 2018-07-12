@@ -64,13 +64,13 @@ func main() {
 		a.createStoreCommand(host+"-dig-cloudflare-kim.txt", "dig", "-4", host, "@kim.ns.cloudflare.com", "+nsid"),
 
 		// rfc4892 - gives geographic region
-		a.createStoreCommand(host+"-dig-cloudflare-josh-rfc4892.txt", "dig", "-4", "CH", "TXT", "id.server", host, "@josh.ns.cloudflare.com", "+nsid"),
-		a.createStoreCommand(host+"-dig-cloudflare-kim-rfc4892.txt", "dig", "-4", "CH", "TXT", "id.server", host, "@kim.ns.cloudflare.com", "+nsid"),
+		a.createStoreCommand("dig-cloudflare-josh-rfc4892.txt", "dig", "-4", "CH", "TXT", "id.server", "@josh.ns.cloudflare.com", "+nsid"),
+		a.createStoreCommand("dig-cloudflare-kim-rfc4892.txt", "dig", "-4", "CH", "TXT", "id.server", "@kim.ns.cloudflare.com", "+nsid"),
 
 		// CF support want this, too. Don't see what it's useful for
 		// unless we have customers using this service
 		// and they happen to hit the same box in the pool
-		a.createStoreCommand(host+"-dig-cloudflare.txt", "dig", "-4", "@1.1.1.1", "CH", "TXT", "hostname.cloudflare", "+short"),
+		a.createStoreCommand("dig-cloudflare.txt", "dig", "-4", "@1.1.1.1", "CH", "TXT", "hostname.cloudflare", "+short"),
 
 		a.createStoreCommand("ip-addr.txt", "ip", "addr"),
 		a.createStoreCommand("ip-route.txt", "ip", "route"),
