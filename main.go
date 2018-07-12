@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"sync"
+	"time"
 
 	"github.com/pkg/errors"
 )
@@ -146,11 +147,16 @@ func (a *analyzer) storeError(err error) {
 }
 
 func (a *analyzer) writeFile(zf *zipFile) error {
-	f, err := a.zipWriter.Create(zf.name)
+	header := &zip.FileHeader{
+		Name:     zf.name,
+		Method:   zip.Deflate,
+		Modified: time.Now(),
+	}
+	w, err := a.zipWriter.CreateHeader(header)
 	if err != nil {
 		return errors.Wrap(err, "error creating "+zf.name+" in zip file")
 	}
-	_, err = f.Write(zf.contents)
+	_, err = w.Write(zf.contents)
 	if err != nil {
 		return errors.Wrap(err, "error writing "+zf.name+" to zip file")
 	}
