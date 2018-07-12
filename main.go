@@ -19,7 +19,7 @@ import (
 
 const (
 	host        = "geoip.maxmind.com"
-	zipFileName = "maxmind-network-analysis.zip"
+	zipFileName = "mm-network-analysis.zip"
 )
 
 type zipFile struct {
