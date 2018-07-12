@@ -47,13 +47,36 @@ func main() {
 	}
 
 	tasks := []func(){
-		a.createStoreCommand(host+"-dig.txt", "dig", host),
+		// Ideally, we would just be doing these using Go's httptrace so that
+		// they don't require curl, but this is good enough for now.
+		a.createStoreCommand(host+"-curl-ipv4.txt", "curl", "-4", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], host),
+		a.createStoreCommand(host+"-curl-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], host),
+
+		a.createStoreCommand(host+"-dig.txt", "dig", "-4", "+all", host, "A", host, "AAAA"),
+		a.createStoreCommand(host+"-dig-google.txt", "dig", "-4", "+all", "@8.8.8.8", host, "A", host, "AAAA"),
+		a.createStoreCommand(host+"-dig-google-trace.txt", "dig", "-4", "+all", "+trace", "@8.8.8.8", host, "A", host, "AAAA"),
+
+		// CF support want this, but there are multiple boxes in the pool
+		// so no guarantee we will see the same results as a customer
+		// or hit a broken NS, if there is one
+		a.createStoreCommand(host+"-dig-cloudflare-josh.txt", "dig", "-4", host, "@josh.ns.cloudflare.com", "+nsid"),
+		a.createStoreCommand(host+"-dig-cloudflare-kim.txt", "dig", "-4", host, "@kim.ns.cloudflare.com", "+nsid"),
+
+		// rfc4892 - gives geographic region
+		a.createStoreCommand(host+"-dig-cloudflare-josh-rfc4892.txt", "dig", "-4", "CH", "TXT", "id.server", host, "@josh.ns.cloudflare.com", "+nsid"),
+		a.createStoreCommand(host+"-dig-cloudflare-kim-rfc4892.txt", "dig", "-4", "CH", "TXT", "id.server", host, "@kim.ns.cloudflare.com", "+nsid"),
+
+		// CF support want this, too. Don't see what it's useful for
+		// unless we have customers using this service
+		// and they happen to hit the same box in the pool
+		a.createStoreCommand(host+"-dig-cloudflare.txt", "dig", "-4", "@1.1.1.1", "CH", "TXT", "hostname.cloudflare", "+short"),
+
 		a.createStoreCommand("ip-addr.txt", "ip", "addr"),
 		a.createStoreCommand("ip-route.txt", "ip", "route"),
 		a.createStoreCommand(host+"-mtr-ipv4.json", "mtr", "-j", "-4", host),
 		a.createStoreCommand(host+"-mtr-ipv6.json", "mtr", "-j", "-6", host),
-		a.createStoreCommand(host+"-ping-ipv4.txt", "ping", "-4", "-c", "5", host),
-		a.createStoreCommand(host+"-ping-ipv6.txt", "ping", "-6", "-c", "5", host),
+		a.createStoreCommand(host+"-ping-ipv4.txt", "ping", "-4", "-c", "30", host),
+		a.createStoreCommand(host+"-ping-ipv6.txt", "ping", "-6", "-c", "30", host),
 		a.createStoreCommand(host+"-tracepath.txt", "tracepath", host),
 		a.addIP,
 		a.addResolvConf,
