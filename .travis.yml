@@ -5,8 +5,8 @@ go:
 
 before_install:
   - go get -u gopkg.in/alecthomas/gometalinter.v2
+  - gometalinter.v2 --install
 
 script:
   - go test -v ./...
-  - gometalinter.v2 --install
-  - gometalinter.v2 ./...
+  - gometalinter.v2 --vendor ./...

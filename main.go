@@ -168,7 +168,7 @@ func (a *analyzer) createStoreCommand(
 	args ...string,
 ) func() {
 	return func() {
-		cmd := exec.Command(command, args...)
+		cmd := exec.Command(command, args...) // nolint: gas
 		output, err := cmd.CombinedOutput()
 		if err != nil {
 			a.storeError(errors.Wrapf(err, "error getting data for %s", f))
