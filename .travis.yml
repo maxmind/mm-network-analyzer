@@ -1,0 +1,14 @@
+language: go
+
+go:
+  - "1.8.x"
+  - "1.9.x"
+  - "1.10.x"
+
+before_install:
+  - go get -u gopkg.in/alecthomas/gometalinter.v2
+
+script:
+  - go test -v ./...
+  - gometalinter.v2 --install
+  - gometalinter.v2 ./...
