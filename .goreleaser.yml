@@ -1,13 +1,8 @@
-builds:
-- env:
-  - CGO_ENABLED=0
-- goos:
-  - linux
 archive:
+  wrap_in_directory: true
   replacements:
     darwin: Darwin
     linux: Linux
-    windows: Windows
     386: i386
     amd64: x86_64
   files:
@@ -17,5 +12,3 @@ archive:
     - README.md
 checksum:
   name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ .Tag }}-next"
