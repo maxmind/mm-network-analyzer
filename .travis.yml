@@ -2,11 +2,25 @@ language: go
 
 go:
   - "1.10.x"
+  - "1.11.x"
 
 before_install:
   - go get -u gopkg.in/alecthomas/gometalinter.v2
   - gometalinter.v2 --install
+  - sudo apt-get install -y nodejs
+  - npm install -g snyk
+
+install:
+  - go get -t -v ./...
+  - snyk test --org=maxmind
+
+after_success:
+  - snyk monitor --org=maxmind --project-name=maxmind/mm-network-analyzer
 
 script:
   - go test -v ./...
   - gometalinter.v2 --vendor ./...
+
+env:
+  global:
+    secure: "C+PUMPkIxTrhccO9FcvpfKmtqXb9R5eP7dKlrKgLSwlyiCcnnbQG+OSK+nwEIRK3/XRw4Wz7KVqgPb2DT/A/W2Pn23FKN6muwMn02BuAcBtc8G8M1/UP9v3VOUaUz0E1rFgssXz7/2DROzTeHboadUxTLaQ+fsRHFJDUW65zmJ2ANqSd9y1ZJGGeQKdfE1zhOp2jnETrSzTX/Ts4tPb2U2gHjwuJjlbrm1alFUvpsHcMQWykXQqAvUwLp33VldRlu15chB/qac6RGCCgAEaUE/Zd+M9MKtXAj58oqOsPVl0AJuXr/z/P7fXSqxAGFjIfXy2F7TXoKfqP5KHf+YxyYjho+pDQb9xxXZebl8N0LJpINY40xdrRTsNPTWythfQCL5+tN71j28HHHsK4ACHTIjncvYg/jJ/Znlb4KNAblB+FJVuzayOtFTbDCrXD/+1PLWjfqL7NRIFAWO6nTqkE1p3Nr2IH0Th3nD2C3lJL1DdM1yb/rTgwNo4zWd8wk6Ja/5jB9CAlk3ESjcAfUdCKtWmy+m5onG1oMj2VVEkqPyt4uGqMui6+wVp/cHQvw6UeLWKtILXkWBfuaFfvpuvpNkSAB3JbT1P1dO9qdnXg2i7fB54Sl4kkGE+Q5tErFzc8ErY1tgC3ducusLd5mvr/QyBNzslpS0Md6O7LUQGRM+c="
