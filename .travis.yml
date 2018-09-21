@@ -1,21 +1,23 @@
 language: go
 
-go:
-  - "1.10.x"
-  - "1.11.x"
+matrix:
+  include:
+    - go: "1.10.x"
+    - go: "1.11.x"
+      env: RUN_SNYK=true
 
 before_install:
   - go get -u gopkg.in/alecthomas/gometalinter.v2
   - gometalinter.v2 --install
-  - sudo apt-get install -y nodejs
-  - npm install -g snyk
+  - "if [[ $RUN_SNYK ]]; then sudo apt-get install -y nodejs; fi"
+  - "if [[ $RUN_SNYK ]]; then npm install -g snyk; fi"
 
 install:
   - go get -t -v ./...
-  - snyk test --org=maxmind
+  - "if [[ $RUN_SNYK ]]; then snyk test --org=maxmind; fi"
 
 after_success:
-  - snyk monitor --org=maxmind --project-name=maxmind/mm-network-analyzer
+  - "if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' && $RUN_SNYK ]]; then snyk monitor --org=maxmind --project-name=maxmind/mm-network-analyzer; fi"
 
 script:
   - go test -v ./...
