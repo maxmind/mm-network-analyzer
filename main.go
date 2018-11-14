@@ -183,7 +183,8 @@ func (a *analyzer) mtrCommands() []func() {
 	cmd := exec.Command("mtr", "--help") // nolint: gas, gosec
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		a.storeError(errors.Wrapf(err, "error determining mtr command"))
+		a.storeError(errors.Wrapf(err, "error determining mtr command: %s", output))
+		return []func(){}
 	}
 
 	// Select the display mode and file extension based on the machine's
