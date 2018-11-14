@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"regexp"
 	"sync"
 	"time"
 
@@ -179,8 +178,6 @@ func (a *analyzer) createStoreCommand(
 	}
 }
 
-var hasJSONRE = regexp.MustCompile("--json")
-var hasReportWideRE = regexp.MustCompile("--report-wide")
 func (a *analyzer) mtrCommands() []func() {
 	// Determine what options the machine's mtr offers
 	cmd := exec.Command("mtr", "--help") // nolint: gas, gosec
@@ -193,10 +190,10 @@ func (a *analyzer) mtrCommands() []func() {
 	// mtr capabilities.
 	var displayArgs []string
 	var fileExt string
-	if (hasJSONRE.Match(output)) {
+	if (bytes.Contains(output, []byte("--json"))) {
 		displayArgs = []string{"--json"}
 		fileExt = "json"
-	} else if (hasReportWideRE.Match(output)) {
+	} else if (bytes.Contains(output, []byte("--report-wide"))) {
 		displayArgs = []string{"--report-wide"}
 		fileExt = "txt"
 	} else {
