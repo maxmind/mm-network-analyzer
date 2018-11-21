@@ -74,14 +74,15 @@ func main() {
 
 		a.createStoreCommand("ip-addr.txt", "ip", "addr"),
 		a.createStoreCommand("ip-route.txt", "ip", "route"),
-		a.createStoreCommand(host+"-mtr-ipv4.json", "mtr", "-j", "-4", host),
-		a.createStoreCommand(host+"-mtr-ipv6.json", "mtr", "-j", "-6", host),
+
 		a.createStoreCommand(host+"-ping-ipv4.txt", "ping", "-4", "-c", "30", host),
 		a.createStoreCommand(host+"-ping-ipv6.txt", "ping", "-6", "-c", "30", host),
 		a.createStoreCommand(host+"-tracepath.txt", "tracepath", host),
 		a.addIP,
 		a.addResolvConf,
 	}
+
+	tasks = append(tasks, a.mtrCommands()...)
 
 	var wg sync.WaitGroup
 	for _, task := range tasks {
@@ -174,6 +175,36 @@ func (a *analyzer) createStoreCommand(
 			a.storeError(errors.Wrapf(err, "error getting data for %s", f))
 		}
 		a.storeFile(f, output)
+	}
+}
+
+func (a *analyzer) mtrCommands() []func() {
+	// Determine what options the machine's mtr offers
+	cmd := exec.Command("mtr", "--help") // nolint: gas, gosec
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		a.storeError(errors.Wrapf(err, "error determining mtr command: %s", output))
+		return []func(){}
+	}
+
+	// Select the display mode and file extension based on the machine's
+	// mtr capabilities.
+	var displayArgs []string
+	var fileExt string
+	if (bytes.Contains(output, []byte("--json"))) {
+		displayArgs = []string{"--json"}
+		fileExt = "json"
+	} else if (bytes.Contains(output, []byte("--report-wide"))) {
+		displayArgs = []string{"--report-wide"}
+		fileExt = "txt"
+	} else {
+		displayArgs = []string{"--report", "--no-dns"}
+		fileExt = "txt"
+	}
+
+	return []func(){
+		a.createStoreCommand(host+"-mtr-ipv4."+fileExt, "mtr", append(displayArgs, "-4", host)...),
+		a.createStoreCommand(host+"-mtr-ipv6."+fileExt, "mtr", append(displayArgs, "-6", host)...),
 	}
 }
 
