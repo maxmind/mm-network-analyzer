@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 1.0.2 (2019-01-07)
+
+* Added `mtr` report fallback to support execution when the desired mode
+  is unavailable. (Try for `--json`, `--report-wide`, and
+  `--report --no-dns` in that order.)
+
 ## 1.0.1 (2018-08-17)
 
 * Files are now in a directory inside release archives.
