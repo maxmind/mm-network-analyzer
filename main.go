@@ -50,8 +50,10 @@ func main() {
 	tasks := []func(){
 		// Ideally, we would just be doing these using Go's httptrace so that
 		// they don't require curl, but this is good enough for now.
-		a.createStoreCommand(host+"-curl-ipv4.txt", "curl", "-4", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], host),
-		a.createStoreCommand(host+"-curl-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], host),
+		a.createStoreCommand("https-"+host+"-curl-ipv4.txt", "curl", "-4", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "https://"+host),
+		a.createStoreCommand("http-"+host+"-curl-ipv4.txt", "curl", "-4", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "http://"+host),
+		a.createStoreCommand("https-"+host+"-curl-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "https://"+host),
+		a.createStoreCommand("http-"+host+"-curl-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "http://"+host),
 
 		a.createStoreCommand(host+"-dig.txt", "dig", "-4", "+all", host, "A", host, "AAAA"),
 		a.createStoreCommand(host+"-dig-google.txt", "dig", "-4", "+all", "@8.8.8.8", host, "A", host, "AAAA"),
@@ -191,10 +193,10 @@ func (a *analyzer) mtrCommands() []func() {
 	// mtr capabilities.
 	var displayArgs []string
 	var fileExt string
-	if (bytes.Contains(output, []byte("--json"))) {
+	if bytes.Contains(output, []byte("--json")) {
 		displayArgs = []string{"--json"}
 		fileExt = "json"
-	} else if (bytes.Contains(output, []byte("--report-wide"))) {
+	} else if bytes.Contains(output, []byte("--report-wide")) {
 		displayArgs = []string{"--report-wide"}
 		fileExt = "txt"
 	} else {
