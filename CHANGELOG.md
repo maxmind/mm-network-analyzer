@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.3 (2019-02-25)
+
+* Curl host using HTTPS as well as HTTP.
+
 ## 1.0.2 (2019-01-07)
 
 * Added `mtr` report fallback to support execution when the desired mode
