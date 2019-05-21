@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.4 (2019-05-21)
+
+* Get /cdn-cgi/trace endpoint for Cloudflare troubleshooting
+
 ## 1.0.3 (2019-02-25)
 
 * Curl host using HTTPS as well as HTTP.
