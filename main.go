@@ -55,6 +55,13 @@ func main() {
 		a.createStoreCommand("https-"+host+"-curl-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "https://"+host),
 		a.createStoreCommand("http-"+host+"-curl-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "http://"+host),
 
+		// Get Cloudflare /cdn-cgi/trace output to determine colo endpoint
+		a.createStoreCommand("https-"+host+"-cdn-cgi-trace-ipv4.txt", "curl", "-4", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "https://"+host+"/cdn-cgi/trace"),
+		a.createStoreCommand("http-"+host+"-cdn-cgi-trace-ipv4.txt", "curl", "-4", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "http://"+host+"/cdn-cgi/trace"),
+		a.createStoreCommand("https-"+host+"-cdn-cgi-trace-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "https://"+host+"/cdn-cgi/trace"),
+		a.createStoreCommand("http-"+host+"-cdn-cgi-trace-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "http://"+host+"/cdn-cgi/trace"),
+
+		// Sanity check DNS resolution
 		a.createStoreCommand(host+"-dig.txt", "dig", "-4", "+all", host, "A", host, "AAAA"),
 		a.createStoreCommand(host+"-dig-google.txt", "dig", "-4", "+all", "@8.8.8.8", host, "A", host, "AAAA"),
 		a.createStoreCommand(host+"-dig-google-trace.txt", "dig", "-4", "+all", "+trace", "@8.8.8.8", host, "A", host, "AAAA"),
