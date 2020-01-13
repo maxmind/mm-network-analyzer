@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
+  digest = "1:9053d7051fbebf02ad72d984134c2ba462eb46f7506e1145534550e6d0f702a5"
   name = "github.com/pkg/errors"
   packages = ["."]
   pruneopts = "UT"
-  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
-  version = "v0.8.1"
+  revision = "49f8f617296114c890ae0b7ac18c5953d2b1ca0f"
+  version = "v0.9.0"
 
 [solve-meta]
   analyzer-name = "dep"
