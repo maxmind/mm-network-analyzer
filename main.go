@@ -47,6 +47,7 @@ func main() {
 		log.Println(err)
 	}
 
+	// nolint: lll
 	tasks := []func(){
 		// Ideally, we would just be doing these using Go's httptrace so that
 		// they don't require curl, but this is good enough for now.
@@ -121,7 +122,7 @@ func main() {
 }
 
 func newAnalyzer() (*analyzer, error) {
-	f, err := os.OpenFile(zipFileName, os.O_WRONLY|os.O_CREATE, 0600)
+	f, err := os.OpenFile(zipFileName, os.O_WRONLY|os.O_CREATE, 0o600)
 	if err != nil {
 		return nil, errors.Wrap(err, "error opening "+zipFileName)
 	}
@@ -189,7 +190,7 @@ func (a *analyzer) createStoreCommand(
 
 func (a *analyzer) mtrCommands() []func() {
 	// Determine what options the machine's mtr offers
-	cmd := exec.Command("mtr", "--help") // nolint: gas, gosec
+	cmd := exec.Command("mtr", "--help")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		a.storeError(errors.Wrapf(err, "error determining mtr command: %s", output))
@@ -200,13 +201,14 @@ func (a *analyzer) mtrCommands() []func() {
 	// mtr capabilities.
 	var displayArgs []string
 	var fileExt string
-	if bytes.Contains(output, []byte("--json")) {
+	switch {
+	case bytes.Contains(output, []byte("--json")):
 		displayArgs = []string{"--json"}
 		fileExt = "json"
-	} else if bytes.Contains(output, []byte("--report-wide")) {
+	case bytes.Contains(output, []byte("--report-wide")):
 		displayArgs = []string{"--report-wide"}
 		fileExt = "txt"
-	} else {
+	default:
 		displayArgs = []string{"--report", "--no-dns"}
 		fileExt = "txt"
 	}
@@ -218,7 +220,7 @@ func (a *analyzer) mtrCommands() []func() {
 }
 
 func (a *analyzer) addIP() {
-	resp, err := http.Get("http://" + host + "/app/update_getipaddr")
+	resp, err := http.Get("http://" + host + "/app/update_getipaddr") // nolint: noctx
 	if err != nil {
 		err = errors.Wrap(err, "error getting IP address")
 		a.storeError(err)
@@ -226,6 +228,7 @@ func (a *analyzer) addIP() {
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		_ = resp.Body.Close()
 		err = errors.Wrap(err, "error reading IP address body")
 		a.storeError(err)
 		return
