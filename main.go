@@ -7,7 +7,7 @@ import (
 	"archive/zip"
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -226,7 +226,7 @@ func (a *analyzer) addIP() {
 		a.storeError(err)
 		return
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		_ = resp.Body.Close()
 		err = errors.Wrap(err, "error reading IP address body")
@@ -238,7 +238,7 @@ func (a *analyzer) addIP() {
 }
 
 func (a *analyzer) addResolvConf() {
-	contents, err := ioutil.ReadFile("/etc/resolv.conf")
+	contents, err := os.ReadFile("/etc/resolv.conf")
 	if err != nil {
 		err = errors.Wrap(err, "error reading resolv.conf")
 		a.storeError(err)
