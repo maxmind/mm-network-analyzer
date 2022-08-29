@@ -47,7 +47,7 @@ func main() {
 		log.Println(err)
 	}
 
-	// nolint: lll
+	//nolint: lll
 	tasks := []func(){
 		// Ideally, we would just be doing these using Go's httptrace so that
 		// they don't require curl, but this is good enough for now.
@@ -179,7 +179,7 @@ func (a *analyzer) createStoreCommand(
 	args ...string,
 ) func() {
 	return func() {
-		cmd := exec.Command(command, args...) // nolint: gas, gosec
+		cmd := exec.Command(command, args...) //nolint:gas // preexisting
 		output, err := cmd.CombinedOutput()
 		if err != nil {
 			a.storeError(errors.Wrapf(err, "error getting data for %s", f))
@@ -220,7 +220,7 @@ func (a *analyzer) mtrCommands() []func() {
 }
 
 func (a *analyzer) addIP() {
-	resp, err := http.Get("http://" + host + "/app/update_getipaddr") // nolint: noctx
+	resp, err := http.Get("http://" + host + "/app/update_getipaddr") //nolint:noctx // preexisting
 	if err != nil {
 		err = errors.Wrap(err, "error getting IP address")
 		a.storeError(err)
