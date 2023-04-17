@@ -12,3 +12,5 @@ archive:
     - README.md
 checksum:
   name_template: 'checksums.txt'
+release:
+  target_commitish: "{{ .FullCommit }}"
