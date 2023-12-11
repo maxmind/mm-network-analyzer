@@ -49,14 +49,18 @@ func main() {
 	tasks := []func(){
 		// Ideally, we would just be doing these using Go's httptrace so that
 		// they don't require curl, but this is good enough for now.
+		//nolint:goconst //preexisting
 		a.createStoreCommand("https-"+host+"-curl-ipv4.txt", "curl", "-4", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "https://"+host),
+		//nolint:goconst //preexisting
 		a.createStoreCommand("http-"+host+"-curl-ipv4.txt", "curl", "-4", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "http://"+host),
 		a.createStoreCommand("https-"+host+"-curl-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "https://"+host),
 		a.createStoreCommand("http-"+host+"-curl-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "http://"+host),
 
 		// Get Cloudflare /cdn-cgi/trace output to determine colo endpoint
+		//nolint:goconst //preexisting
 		a.createStoreCommand("https-"+host+"-cdn-cgi-trace-ipv4.txt", "curl", "-4", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "https://"+host+"/cdn-cgi/trace"),
 		a.createStoreCommand("http-"+host+"-cdn-cgi-trace-ipv4.txt", "curl", "-4", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "http://"+host+"/cdn-cgi/trace"),
+
 		a.createStoreCommand("https-"+host+"-cdn-cgi-trace-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "https://"+host+"/cdn-cgi/trace"),
 		a.createStoreCommand("http-"+host+"-cdn-cgi-trace-ipv6.txt", "curl", "-6", "--trace-time", "--trace-ascii", "-", "--user-agent", os.Args[0], "http://"+host+"/cdn-cgi/trace"),
 
