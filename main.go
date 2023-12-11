@@ -122,7 +122,7 @@ func main() {
 func newAnalyzer() (*analyzer, error) {
 	f, err := os.OpenFile(zipFileName, os.O_WRONLY|os.O_CREATE, 0o600)
 	if err != nil {
-		return nil, fmt.Errorf("error opening "+zipFileName+": %w", err)
+		return nil, fmt.Errorf("opening %s: %w", zipFileName, err)
 	}
 
 	return &analyzer{
@@ -134,11 +134,11 @@ func newAnalyzer() (*analyzer, error) {
 func (a *analyzer) close() error {
 	err := a.zipWriter.Close()
 	if err != nil {
-		return fmt.Errorf("error closing zip file writer: %w", err)
+		return fmt.Errorf("closing zip file writer: %w", err)
 	}
 	err = a.zipFile.Close()
 	if err != nil {
-		return fmt.Errorf("error closing zip file: %w", err)
+		return fmt.Errorf("closing zip file: %w", err)
 	}
 	return nil
 }
@@ -163,11 +163,11 @@ func (a *analyzer) writeFile(zf *zipFile) error {
 	}
 	w, err := a.zipWriter.CreateHeader(header)
 	if err != nil {
-		return fmt.Errorf("error creating "+zf.name+" in zip file"+": %w", err)
+		return fmt.Errorf("creating %s in zip file: %w", zf.name, err)
 	}
 	_, err = w.Write(zf.contents)
 	if err != nil {
-		return fmt.Errorf("error writing "+zf.name+" to zip file"+": %w", err)
+		return fmt.Errorf("writing %s to zip file: %w", zf.name, err)
 	}
 	return nil
 }
@@ -180,7 +180,7 @@ func (a *analyzer) createStoreCommand(
 		cmd := exec.Command(command, args...) //nolint:gas // preexisting
 		output, err := cmd.CombinedOutput()
 		if err != nil {
-			a.storeError(fmt.Errorf("error getting data for %s: %w", f, err))
+			a.storeError(fmt.Errorf("getting data for %s: %w", f, err))
 		}
 		a.storeFile(f, output)
 	}
@@ -191,7 +191,7 @@ func (a *analyzer) mtrCommands() []func() {
 	cmd := exec.Command("mtr", "--help")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
-		a.storeError(fmt.Errorf("error determining mtr command: %s: %w", output, err))
+		a.storeError(fmt.Errorf("determining mtr command: %s: %w", output, err))
 		return []func(){}
 	}
 
@@ -220,14 +220,14 @@ func (a *analyzer) mtrCommands() []func() {
 func (a *analyzer) addIP() {
 	resp, err := http.Get("http://" + host + "/app/update_getipaddr") //nolint:noctx // preexisting
 	if err != nil {
-		err = fmt.Errorf("error getting IP address: %w", err)
+		err = fmt.Errorf("getting IP address: %w", err)
 		a.storeError(err)
 		return
 	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		_ = resp.Body.Close()
-		err = fmt.Errorf("error reading IP address body: %w", err)
+		err = fmt.Errorf("reading IP address body: %w", err)
 		a.storeError(err)
 		return
 	}
@@ -238,7 +238,7 @@ func (a *analyzer) addIP() {
 func (a *analyzer) addResolvConf() {
 	contents, err := os.ReadFile("/etc/resolv.conf")
 	if err != nil {
-		err = fmt.Errorf("error reading resolv.conf: %w", err)
+		err = fmt.Errorf("reading resolv.conf: %w", err)
 		a.storeError(err)
 		return
 	}
@@ -255,7 +255,7 @@ func (a *analyzer) addErrors() error {
 	for _, storedErr := range a.errors {
 		_, err := fmt.Fprintf(buf, "%+v\n\n----------\n\n", storedErr)
 		if err != nil {
-			return fmt.Errorf("error writing errors.txt buffer: %w", err)
+			return fmt.Errorf("writing errors.txt buffer: %w", err)
 		}
 	}
 	a.storeFile("errors.txt", buf.Bytes())
