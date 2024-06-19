@@ -19,12 +19,12 @@ archive. Inside is the `mm-network-analyzer` binary.
 
 ## Installation from source or Git
 
-You need the Go compiler (Go 1.10+). You can get it at the [Go
+You need the Go compiler (Go 1.21+). You can get it at the [Go
 website](https://golang.org).
 
 The easiest way is via `go get`:
 
-    $ go get -u github.com/maxmind/mm-network-analyzer
+    $ go install github.com/maxmind/mm-network-analyzer@latest
 
 The program will be installed to `$GOPATH/bin/mm-network-analyzer`.
 
