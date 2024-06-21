@@ -1,15 +1,12 @@
-archive:
-  wrap_in_directory: true
-  replacements:
-    darwin: Darwin
-    linux: Linux
-    386: i386
-    amd64: x86_64
-  files:
-    - CHANGELOG.md
-    - LICENSE-APACHE
-    - LICENSE-MIT
-    - README.md
+version: 2
+archives:
+  -
+    wrap_in_directory: true
+    files:
+      - CHANGELOG.md
+      - LICENSE-APACHE
+      - LICENSE-MIT
+      - README.md
 checksum:
   name_template: 'checksums.txt'
 release:
