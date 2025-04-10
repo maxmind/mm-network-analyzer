@@ -45,7 +45,6 @@ func main() {
 		log.Println(err)
 	}
 
-	//nolint: lll
 	tasks := []func(){
 		// Ideally, we would just be doing these using Go's httptrace so that
 		// they don't require curl, but this is good enough for now.
