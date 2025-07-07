@@ -322,7 +322,7 @@ func (a *analyzer) createStoreCommand(
 	args ...string,
 ) func() {
 	return func() {
-		cmd := exec.Command(command, args...) //nolint:gas // preexisting
+		cmd := exec.Command(command, args...)
 		output, err := cmd.CombinedOutput()
 		if err != nil {
 			a.storeError(fmt.Errorf("getting data for %s: %w", f, err))
