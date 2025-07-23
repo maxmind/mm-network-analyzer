@@ -6,6 +6,7 @@ package main
 import (
 	"archive/zip"
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"log"
@@ -45,11 +46,14 @@ func main() {
 		log.Println(err)
 	}
 
+	ctx := context.Background()
+
 	tasks := []func(){
 		// Ideally, we would just be doing these using Go's httptrace so that
 		// they don't require curl, but this is good enough for now.
 
 		a.createStoreCommand(
+			ctx,
 			"https-"+host+"-curl-ipv4.txt",
 			"curl",
 			"-4",
@@ -62,6 +66,7 @@ func main() {
 		),
 
 		a.createStoreCommand(
+			ctx,
 			"http-"+host+"-curl-ipv4.txt",
 			"curl",
 			"-4",
@@ -73,6 +78,7 @@ func main() {
 			"http://"+host,
 		),
 		a.createStoreCommand(
+			ctx,
 			"https-"+host+"-curl-ipv6.txt",
 			"curl",
 			"-6",
@@ -84,6 +90,7 @@ func main() {
 			"https://"+host,
 		),
 		a.createStoreCommand(
+			ctx,
 			"http-"+host+"-curl-ipv6.txt",
 			"curl",
 			"-6",
@@ -98,6 +105,7 @@ func main() {
 		// Get Cloudflare /cdn-cgi/trace output to determine colo endpoint
 
 		a.createStoreCommand(
+			ctx,
 			"https-"+host+"-cdn-cgi-trace-ipv4.txt",
 			"curl",
 			"-4",
@@ -109,6 +117,7 @@ func main() {
 			"https://"+host+"/cdn-cgi/trace",
 		),
 		a.createStoreCommand(
+			ctx,
 			"http-"+host+"-cdn-cgi-trace-ipv4.txt",
 			"curl",
 			"-4",
@@ -121,6 +130,7 @@ func main() {
 		),
 
 		a.createStoreCommand(
+			ctx,
 			"https-"+host+"-cdn-cgi-trace-ipv6.txt",
 			"curl",
 			"-6",
@@ -132,6 +142,7 @@ func main() {
 			"https://"+host+"/cdn-cgi/trace",
 		),
 		a.createStoreCommand(
+			ctx,
 			"http-"+host+"-cdn-cgi-trace-ipv6.txt",
 			"curl",
 			"-6",
@@ -144,8 +155,9 @@ func main() {
 		),
 
 		// Sanity check DNS resolution
-		a.createStoreCommand(host+"-dig.txt", "dig", "-4", "+all", host, "A", host, "AAAA"),
+		a.createStoreCommand(ctx, host+"-dig.txt", "dig", "-4", "+all", host, "A", host, "AAAA"),
 		a.createStoreCommand(
+			ctx,
 			host+"-dig-google.txt",
 			"dig",
 			"-4",
@@ -157,6 +169,7 @@ func main() {
 			"AAAA",
 		),
 		a.createStoreCommand(
+			ctx,
 			host+"-dig-google-trace.txt",
 			"dig",
 			"-4",
@@ -173,6 +186,7 @@ func main() {
 		// so no guarantee we will see the same results as a customer
 		// or hit a broken NS, if there is one
 		a.createStoreCommand(
+			ctx,
 			host+"-dig-cloudflare-josh.txt",
 			"dig",
 			"-4",
@@ -181,6 +195,7 @@ func main() {
 			"+nsid",
 		),
 		a.createStoreCommand(
+			ctx,
 			host+"-dig-cloudflare-kim.txt",
 			"dig",
 			"-4",
@@ -191,6 +206,7 @@ func main() {
 
 		// rfc4892 - gives geographic region
 		a.createStoreCommand(
+			ctx,
 			"dig-cloudflare-josh-rfc4892.txt",
 			"dig",
 			"-4",
@@ -201,6 +217,7 @@ func main() {
 			"+nsid",
 		),
 		a.createStoreCommand(
+			ctx,
 			"dig-cloudflare-kim-rfc4892.txt",
 			"dig",
 			"-4",
@@ -215,6 +232,7 @@ func main() {
 		// unless we have customers using this service
 		// and they happen to hit the same box in the pool
 		a.createStoreCommand(
+			ctx,
 			"dig-cloudflare.txt",
 			"dig",
 			"-4",
@@ -225,17 +243,17 @@ func main() {
 			"+short",
 		),
 
-		a.createStoreCommand("ip-addr.txt", "ip", "addr"),
-		a.createStoreCommand("ip-route.txt", "ip", "route"),
+		a.createStoreCommand(ctx, "ip-addr.txt", "ip", "addr"),
+		a.createStoreCommand(ctx, "ip-route.txt", "ip", "route"),
 
-		a.createStoreCommand(host+"-ping-ipv4.txt", "ping", "-4", "-c", "30", host),
-		a.createStoreCommand(host+"-ping-ipv6.txt", "ping", "-6", "-c", "30", host),
-		a.createStoreCommand(host+"-tracepath.txt", "tracepath", host),
+		a.createStoreCommand(ctx, host+"-ping-ipv4.txt", "ping", "-4", "-c", "30", host),
+		a.createStoreCommand(ctx, host+"-ping-ipv6.txt", "ping", "-6", "-c", "30", host),
+		a.createStoreCommand(ctx, host+"-tracepath.txt", "tracepath", host),
 		a.addIP,
 		a.addResolvConf,
 	}
 
-	tasks = append(tasks, a.mtrCommands()...)
+	tasks = append(tasks, a.mtrCommands(ctx)...)
 
 	var wg sync.WaitGroup
 	for _, task := range tasks {
@@ -318,11 +336,12 @@ func (a *analyzer) writeFile(zf *zipFile) error {
 }
 
 func (a *analyzer) createStoreCommand(
+	ctx context.Context,
 	f, command string,
 	args ...string,
 ) func() {
 	return func() {
-		cmd := exec.Command(command, args...)
+		cmd := exec.CommandContext(ctx, command, args...)
 		output, err := cmd.CombinedOutput()
 		if err != nil {
 			a.storeError(fmt.Errorf("getting data for %s: %w", f, err))
@@ -331,9 +350,9 @@ func (a *analyzer) createStoreCommand(
 	}
 }
 
-func (a *analyzer) mtrCommands() []func() {
+func (a *analyzer) mtrCommands(ctx context.Context) []func() {
 	// Determine what options the machine's mtr offers
-	cmd := exec.Command("mtr", "--help")
+	cmd := exec.CommandContext(ctx, "mtr", "--help")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		a.storeError(fmt.Errorf("determining mtr command: %s: %w", output, err))
@@ -357,8 +376,16 @@ func (a *analyzer) mtrCommands() []func() {
 	}
 
 	return []func(){
-		a.createStoreCommand(host+"-mtr-ipv4."+fileExt, "mtr", append(displayArgs, "-4", host)...),
-		a.createStoreCommand(host+"-mtr-ipv6."+fileExt, "mtr", append(displayArgs, "-6", host)...),
+		a.createStoreCommand(
+			ctx,
+			host+"-mtr-ipv4."+fileExt,
+			"mtr",
+			append(displayArgs, "-4", host)...),
+		a.createStoreCommand(
+			ctx,
+			host+"-mtr-ipv6."+fileExt,
+			"mtr",
+			append(displayArgs, "-6", host)...),
 	}
 }
 
