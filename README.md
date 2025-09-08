@@ -19,7 +19,7 @@ archive. Inside is the `mm-network-analyzer` binary.
 
 ## Installation from source or Git
 
-You need the Go compiler (Go 1.21+). You can get it at the [Go
+You need the Go compiler (Go 1.24+). You can get it at the [Go
 website](https://golang.org).
 
 The easiest way is via `go get`:
@@ -35,7 +35,7 @@ https://github.com/maxmind/mm-network-analyzer/issues
 
 # Copyright and License
 
-This software is Copyright (c) 2018 - 2024 by MaxMind, Inc.
+This software is Copyright (c) 2018 - 2025 by MaxMind, Inc.
 
 This is free software, licensed under the [Apache License, Version
 2.0](LICENSE-APACHE) or the [MIT License](LICENSE-MIT), at your option.
