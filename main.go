@@ -341,6 +341,7 @@ func (a *analyzer) createStoreCommand(
 	args ...string,
 ) func() {
 	return func() {
+		//nolint:gosec // command args are controlled
 		cmd := exec.CommandContext(ctx, command, args...)
 		output, err := cmd.CombinedOutput()
 		if err != nil {
