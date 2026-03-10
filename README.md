@@ -1,8 +1,8 @@
 # mm-network-analyzer
 
-mm-network-analyzer collects data about the machine it is running on and
-its network connection to help diagnose routing, DNS, and other issues to
-MaxMind servers.
+mm-network-analyzer collects data about the machine it is running on and its
+network connection to help diagnose routing, DNS, and other issues to MaxMind
+servers.
 
 ## Usage
 
@@ -13,14 +13,14 @@ directory. It contains diagnostic information.
 
 ## Installation a release
 
-Find a suitable archive for your system on the [Releases
-tab](https://github.com/maxmind/mm-network-analyzer/releases). Extract the
-archive. Inside is the `mm-network-analyzer` binary.
+Find a suitable archive for your system on the
+[Releases tab](https://github.com/maxmind/mm-network-analyzer/releases). Extract
+the archive. Inside is the `mm-network-analyzer` binary.
 
 ## Installation from source or Git
 
-You need the Go compiler (Go 1.24+). You can get it at the [Go
-website](https://golang.org).
+You need the Go compiler (Go 1.24+). You can get it at the
+[Go website](https://golang.org).
 
 The easiest way is via `go get`:
 
@@ -37,5 +37,6 @@ https://github.com/maxmind/mm-network-analyzer/issues
 
 This software is Copyright (c) 2018 - 2025 by MaxMind, Inc.
 
-This is free software, licensed under the [Apache License, Version
-2.0](LICENSE-APACHE) or the [MIT License](LICENSE-MIT), at your option.
+This is free software, licensed under the
+[Apache License, Version 2.0](LICENSE-APACHE) or the [MIT License](LICENSE-MIT),
+at your option.
