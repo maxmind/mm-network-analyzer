@@ -1,3 +1,3 @@
 module github.com/maxmind/mm-network-analyzer
 
-go 1.24
+go 1.25.0
