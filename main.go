@@ -257,11 +257,7 @@ func main() {
 
 	var wg sync.WaitGroup
 	for _, task := range tasks {
-		wg.Add(1)
-		go func(task func()) {
-			task()
-			wg.Done()
-		}(task)
+		wg.Go(task)
 	}
 
 	wg.Wait()
