@@ -20,7 +20,7 @@ the archive. Inside is the `mm-network-analyzer` binary.
 ## Installation from source or Git
 
 You need the Go compiler (Go 1.25+). You can get it at the
-[Go website](https://golang.org).
+[Go website](https://go.dev/).
 
 The easiest way is via `go get`:
 
