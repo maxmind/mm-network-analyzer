@@ -9,6 +9,7 @@ disable_backends = [
 go = "latest"
 "github:golangci/golangci-lint" = "latest"
 "github:houseabsolute/precious" = "latest"
+"github:goreleaser/goreleaser" = "latest"
 lychee = "latest"
 node = "latest"
 "npm:prettier" = "latest"

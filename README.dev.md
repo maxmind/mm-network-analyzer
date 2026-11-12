@@ -1,6 +1,7 @@
 # Releasing
 
-- Install `goreleaser`. Refer to its docs.
+- Run `mise install`. It installs `goreleaser` and the Go version from
+  `mise.lock`.
 - Set a `GITHUB_TOKEN` environment variable. Refer to `goreleaser` docs for
   information.
 - Update `CHANGELOG.md`.
@@ -10,4 +11,4 @@
 - Commit `CHANGELOG.md`.
 - Tag the release: `git tag -a v1.2.3 -m 'Tag v1.2.3'`.
 - Push the tag: `git push origin v1.2.3`.
-- Run `goreleaser`.
+- Run `mise exec -- goreleaser release`.
