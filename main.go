@@ -251,7 +251,7 @@ func main() {
 		a.createStoreCommand(ctx, host+"-ping-ipv4.txt", "ping", "-4", "-c", "30", host),
 		a.createStoreCommand(ctx, host+"-ping-ipv6.txt", "ping", "-6", "-c", "30", host),
 		a.createStoreCommand(ctx, host+"-tracepath.txt", "tracepath", host),
-		a.addIP,
+		func() { a.addIP(ctx) },
 		a.addResolvConf,
 	}
 
@@ -388,9 +388,22 @@ func (a *analyzer) mtrCommands(ctx context.Context) []func() {
 	}
 }
 
-func (a *analyzer) addIP() {
-	host := "updates.maxmind.com"
-	resp, err := http.Get("https://" + host + "/app/update_getipaddr") //nolint:noctx // preexisting
+func (a *analyzer) addIP(ctx context.Context) {
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		"https://updates.maxmind.com/app/update_getipaddr",
+		http.NoBody,
+	)
+	if err != nil {
+		a.storeError(fmt.Errorf("creating IP address request: %w", err))
+		return
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		err = fmt.Errorf("getting IP address: %w", err)
 		a.storeError(err)
