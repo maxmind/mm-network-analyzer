@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.1.0
+## 1.1.0 (2026-11-12)
 
 - Fixed the lookup of the public IP address. The program now requests it over
   HTTPS from `updates.maxmind.com`, because the old endpoint on
