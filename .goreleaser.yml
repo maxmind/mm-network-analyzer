@@ -1,6 +1,8 @@
 version: 2
 builds:
-  - goos:
+  - env:
+      - CGO_ENABLED=0
+    goos:
       - darwin
       - linux
 archives:
