@@ -11,8 +11,10 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/netip"
 	"os"
 	"os/exec"
+	"strings"
 	"sync"
 	"time"
 )
@@ -394,11 +396,23 @@ func (a *analyzer) addIP() {
 		a.storeError(err)
 		return
 	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		a.storeError(fmt.Errorf("getting IP address: unexpected status %s", resp.Status))
+		return
+	}
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		_ = resp.Body.Close()
 		err = fmt.Errorf("reading IP address body: %w", err)
 		a.storeError(err)
+		return
+	}
+
+	_, err = netip.ParseAddr(strings.TrimSpace(string(body)))
+	if err != nil {
+		a.storeError(fmt.Errorf("parsing IP address: %w", err))
 		return
 	}
 
