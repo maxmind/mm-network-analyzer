@@ -1,4 +1,8 @@
 version: 2
+builds:
+  - goos:
+      - darwin
+      - linux
 archives:
   -
     wrap_in_directory: true
