@@ -388,7 +388,7 @@ func (a *analyzer) mtrCommands(ctx context.Context) []func() {
 
 func (a *analyzer) addIP() {
 	host := "updates.maxmind.com"
-	resp, err := http.Get("http://" + host + "/app/update_getipaddr") //nolint:noctx // preexisting
+	resp, err := http.Get("https://" + host + "/app/update_getipaddr") //nolint:noctx // preexisting
 	if err != nil {
 		err = fmt.Errorf("getting IP address: %w", err)
 		a.storeError(err)

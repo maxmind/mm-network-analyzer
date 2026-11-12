@@ -2,9 +2,9 @@
 
 ## 1.1.0
 
-- Fixed the lookup of the public IP address. The program now requests it from
-  `updates.maxmind.com`, because the old endpoint on `geoip.maxmind.com` no
-  longer works.
+- Fixed the lookup of the public IP address. The program now requests it over
+  HTTPS from `updates.maxmind.com`, because the old endpoint on
+  `geoip.maxmind.com` no longer works.
 - The release binaries are built with the current Go release. The 1.0.4 binaries
   used Go 1.12.2.
 - The macOS binaries now require macOS 13 Ventura or later, and the Linux
